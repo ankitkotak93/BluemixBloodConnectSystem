@@ -1,0 +1,12 @@
+{% extends "blood/base.html" %}
+{% block content-body %}
+    {% if q %}
+    {% for val in q %}
+      <a href="/blood/drive_list/{{val.id}}">{{val.name}}</a><br/>
+    {% endfor %}
+    {% endif %}
+    <!--Add a file picker for the user to start the upload process -->
+{%endblock%}
+
+
+

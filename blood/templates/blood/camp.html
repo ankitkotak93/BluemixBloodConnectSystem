@@ -1,0 +1,30 @@
+{% extends "blood/base.html" %}
+{% load i18n %}
+{% block content-body %}
+{% if order_list %}
+    <table>
+	<thead>
+		<th>Name</th>
+		<th>Address</th>
+		<th>Contact</th>
+		<th>User</th>
+		<th>Email</th>
+		<th>BgUnits</th>
+		<th>Age</th>
+	</thead>
+    {% for donor in order_list %}
+		<tr>
+        <td>{{ donor.name }}</td>
+		<td>{{ donor.address }}</td>
+		<td>{{ donor.contact }}</td>
+		<td>{{ donor.user }}</td>
+		<td>{{ donor.email }}</td>
+		<td>{{ donor.bgunits }}</td>
+		<td>{{ donor.age }}</td>
+		</tr>
+    {% endfor %}
+	</table>
+{% else %}
+    <p>Table is Empty</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,19 @@
+{%extends "blood/base.html"%}
+{% block content-body %}
+	<h2>Inspiring Stories</h2>
+	<br/>
+	{% if order_list %}
+	    <ul>
+	    {% for donor in order_list %}
+	        <li><a   style="background-image: none;border: 1px solid transparent;
+	border-radius: 4px;color: #fff;
+	background-color: #428bca;
+	border-color: #357ebd;" class="btn btn-primary" href="/blood/view_story/{{donor.id}}">{{ donor.story }}</a></li>
+	    {% endfor %}
+	    </ul>
+	{% else %}
+	    <p>Table is Empty</p>
+	{% endif %}
+{% endblock %}
+
+

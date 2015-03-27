@@ -1,0 +1,139 @@
+{%extends "blood/base.html"%}
+{% block content-body %}
+<h2 style="color:#800000;">Your feedback is valuable to us. Please help us improve your experience.<h2>
+<br/>
+<script src="https://apis.google.com/js/plusone.js">
+</script>
+<div style="min-height: 300px;">
+<div class="g-comments"
+data-href="https://gcdc2013-firstblaid.appspot.com"
+data-width="642"
+data-first_party_property="BLOGGER"
+data-view_type="FILTERED_POSTMOD"> Loading...
+</div>
+</div>
+
+<!-- Place this tag after the last +1 button tag. -->
+<script type="text/javascript">
+(function() {
+ var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+ po.src = 'https://apis.google.com/js/platform.js';
+ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+ })();
+</script>
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+ })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-46287190-1', 'gcdc2013-firstblaid.appspot.com');
+ga('send', 'pageview');
+
+</script>
+<br/>
+<script type="text/javascript" src="js/jquery.mixitup.min.js"></script>
+<script type="text/javascript">
+$(function () {
+
+				var filterList = {
+
+init: function () {
+
+// MixItUp plugin
+// http://mixitup.io
+$('#portfoliolist').mixitup({
+targetSelector: '.portfolio',
+filterSelector: '.filter',
+effects: ['fade'],
+easing: 'snap',
+// call the hover effect
+onMixEnd: filterList.hoverEffect()
+});				
+
+},
+
+hoverEffect: function () {
+
+					 // Simple parallax effect
+					 $('#portfoliolist .portfolio').hover(
+									 function () {
+									 $(this).find('.label').stop().animate({bottom: 0}, 200, 'easeOutQuad');
+									 $(this).find('img').stop().animate({top: -30}, 500, 'easeOutQuad');				
+									 },
+									 function () {
+									 $(this).find('.label').stop().animate({bottom: -40}, 200, 'easeInQuad');
+									 $(this).find('img').stop().animate({top: 0}, 300, 'easeOutQuad');								
+									 }		
+									 );				
+
+			 }
+
+};
+
+// Run the show!
+filterList.init();
+
+
+});	
+</script>
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+				var defaults = {
+containerID: 'toTop', // fading element id
+containerHoverID: 'toTopHover', // fading element hover id
+scrollSpeed: 1200,
+easingType: 'linear' 
+};
+
+
+$().UItoTop({ easingType: 'easeOutQuart' });
+
+});
+</script>
+
+<script src="js/jquery.scrollTo.js"></script>
+<script src="js/jquery.nav.js"></script>
+<script>
+$(document).ready(function() {
+				$('#nav').onePageNav({
+begin: function() {
+console.log('start')
+},
+end: function() {
+console.log('stop')
+}
+});
+				});
+</script>
+</div>
+
+
+
+
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="js/stry/bootstrap.js"></script>
+
+<script src="js/stry/holder.js"></script>
+
+<script src="js/stry/application.js"></script>
+
+
+
+
+
+</div>
+</div></div>
+{% endblock %}

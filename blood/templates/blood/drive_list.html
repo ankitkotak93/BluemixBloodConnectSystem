@@ -1,0 +1,234 @@
+{%extends "blood/base.html"%}
+
+{% block content-body %}
+
+   
+ <script type="text/javascript" src="/static/js/FileSaver.js"></script>
+  <script type="text/javascript" src="/static/js/jspdf.js"></script>
+    <script type="text/javascript" src="/static/js/Blob.js"></script>
+<script type="text/javascript" src="/static/js/jspdf.plugin.standard_fonts_metrics.js"></script>
+<script type="text/javascript" src="/static/js/jspdf.plugin.split_text_to_size.js"></script> 
+<script type="text/javascript" src="/static/js/jspdf.plugin.from_html.js"></script>
+
+
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    <script type="text/javascript">
+
+    var doc = new jsPDF();
+    doc.setFontSize(12);
+    doc.text(20, 20, 'Camp Organiser: '+'{{corg}}');
+    doc.text(20,30,'Camp Name:'+'{{cdetails.name}}');
+    doc.text(20,40,'Location'+', '+'{{cdetails.address}}');
+    doc.setLineWidth(1);
+    doc.line(20,45, 200,45);
+    doc.setLineWidth(0.3);
+    doc.line(20,47,200,47);
+    doc.text(20,55,'Start Date : '+'{{cdetails.sdate}}');
+    doc.text(20,65,'End Date : '+'{{cdetails.edate}}');
+    doc.text(20,75,'Total Donors : '+'{{tdon}}');
+    doc.setLineWidth(1);
+    doc.line(20,80, 200, 80);
+    //console.log('{{don}}');
+    var medicines="";//{{don}};
+    var intake="";
+    var num="";
+    var tc="";
+    //var comments={{comments}};
+    doc.setTextColor(100);
+    doc.text(20,90,'Donor Name');
+    doc.text(80,90,'Email');
+    doc.text(140,90,'Present/Absent');
+    doc.setLineWidth(0.5);
+    doc.line(20,92,200,92);
+    doc.setTextColor(0);
+    var i=0,len=100;  
+    var dq = {{ dquery|safe }};
+    var em = {{ emailit|safe }};
+    //console.log("as");   
+    //console.log('asdf');
+    // var email = {{emailit|safe}}
+    for(i=0;i<dq.length;i++)
+    {
+      doc.setFontSize(12);
+      doc.text(20,len,dq[i][0]);
+      doc.text(80,len,em[i][0]);
+      doc.text(140,len,"[P/A]");
+     // time=tc[i].split('_');
+      //var j=0,x=20;
+      len+=10;
+      /*for(j=0;j<time.length;j++)
+      {
+          doc.setFontSize(8);
+          doc.text(x,len,time[j]);
+          x+=30;
+      }*/
+      len+=5;
+      doc.setLineWidth(0.1);
+      doc.line(20,len,200,len);
+      len+=10;
+    }
+    doc.setFontSize(12);
+    doc.text(20,len,'');
+    doc.line(20,250,50,250);
+    doc.text(20,255,"Signature");
+  var fileName = "Donors_CampName_Sdate_Edate"+".pdf";
+  var data = doc.output();
+  var buffer = new ArrayBuffer(data.length);
+  var array = new Uint8Array(buffer);
+  for (var i = 0; i < data.length; i++) {
+        array[i] = data.charCodeAt(i);
+  }
+
+  var blob = new Blob(
+          [array],
+              {type: 'application/pdf', encoding: 'raw'}
+      );
+
+    function save_to_desktop(){
+      saveAs(blob, fileName);
+    }
+
+      var CLIENT_ID = '58874409849-lae2s3fo9hriq9560tsogv05fjh4kks7.apps.googleusercontent.com';
+      var SCOPES = 'https://www.googleapis.com/auth/drive';
+
+      /**
+       * Called when the client library is loaded to start the auth flow.
+       */
+      function handleClientLoad() {
+        window.setTimeout(checkAuth, 1);
+      }
+
+      /**
+       * Check if the current user has authorized the application.
+       */
+      function checkAuth() {
+        gapi.auth.authorize(
+            {'client_id':'58874409849-lae2s3fo9hriq9560tsogv05fjh4kks7.apps.googleusercontent.com', 'scope': SCOPES, 'immediate': true},
+            handleAuthResult);
+      }
+
+      /**
+       * Called when authorization server replies.
+       *
+       * @param {Object} authResult Authorization result.
+       */
+      function handleAuthResult(authResult) {
+        var authButton = document.getElementById('authorizeButton');
+        //var filePicker = document.getElementById('filePicker');
+        authButton.style.display = 'none';
+        //filePicker.style.display = 'none';
+        if (authResult && !authResult.error) {
+          // Access token has been successfully retrieved, requests can be sent to the API.
+          //filePicker.style.display = 'block';
+          //filePicker.onchange = uploadFile;
+          document.getElementById("upload_to_drive").onclick = uploadFile;
+          // document.getElementById("upload_folder").onclick = uploadFolder;
+        } else {
+          // No access token could be retrieved, show the button to start the authorization flow.
+          authButton.style.display = 'block';
+          authButton.onclick = function() {
+              gapi.auth.authorize(
+                  {'client_id': '58874409849-lae2s3fo9hriq9560tsogv05fjh4kks7.apps.googleusercontent.com', 'scope': SCOPES, 'immediate': false},
+                  handleAuthResult);
+          };
+        }
+      }
+
+      /**
+       * Start the file upload.
+       *
+       * @param {Object} evt Arguments from the file selector.
+       */
+      function uploadFile() {
+        gapi.client.load('drive', 'v2', function() {
+          //var file = evt.target.files[0];
+          //insertFile(file);
+              console.log("file insert");
+              //var blob = new Blob(["{{q}}"], { type: "text/plain" });
+              //blob.setName("PRESY");                        
+      //      insertFile(blob).done(getFolderID);
+              insertFile(blob);
+              setTimeout(function() {
+                      alert("FileUploaded! Please click home button to go back.");
+              },5);
+        });
+      }
+
+      /**
+       * Insert new file.
+       *
+       * @param {File} fileData File object to read data from.
+       * @param {Function} callback Function to call when the request is complete.
+       */
+      function insertFile(fileData, callback) {
+        const boundary = '-------314159265358979323846';
+        const delimiter = "\r\n--" + boundary + "\r\n";
+        const close_delim = "\r\n--" + boundary + "--";
+
+        var reader = new FileReader();
+        reader.readAsBinaryString(fileData);
+        reader.onload = function(e) {
+          var contentType =fileData.type || 'application/octet-stream';
+          var metadata = {
+            'title': fileName,
+            'mimeType': contentType,
+          };
+          //alert(reader.result)
+          var base64Data = btoa(reader.result);
+          var multipartRequestBody =
+              delimiter +
+              'Content-Type: application/json\r\n\r\n' +
+              JSON.stringify(metadata) +
+              delimiter +
+              'Content-Type: ' + contentType + '\r\n' +
+              'Content-Transfer-Encoding: base64\r\n' +
+              '\r\n' + 
+              base64Data +
+              close_delim;
+
+          var request = gapi.client.request({
+              'path': '/upload/drive/v2/files',
+              'method': 'POST',
+              'params': {'uploadType': 'multipart'},
+              'headers': {
+                'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+              },
+              'body': multipartRequestBody});
+          if (!callback) {
+            callback = function(file) {
+              console.log(file)
+            };
+          }
+          request.execute(callback);
+        }
+      }
+    </script>
+    <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+
+<h1>Save Camp details to your google drive</h1>
+<p class="cufon">
+Please Authorize BloodConnect to access your Google drive by Clicking on the Authorize Button. If you do not see the Authorize Button, Please Continue to next step as you have already Authorized.
+
+</p>
+
+Note: This is a One Time Process only. To Revoke Access, please change your Google calendar settings.
+<input type="button" id="authorizeButton" style="display: none" value="Authorize" class="btn btn-danger" />
+<br/>
+<br/>
+
+<p class="cufon">
+Click on save details button to save the camp details to your google drive. 
+</p>
+   {% if q %}
+    <h2>Coming Donors</h2>
+    {% for val in q %}
+      <p>{{forloop.counter}}.
+      {{val.guser}}</p>
+    {% endfor %}
+    {% endif %}
+     <input type="button" id="upload_to_drive" value="Save Donor Details To My Drive" class="btn btn-primary"/>
+    <!-- <input type="file" id="filePicker" style="display: none" /> -->
+    <input type="button" id="authorizeButton" style="display: none" value="Authorize" />
+     <input type="button"  onclick="save_to_desktop()" value="Save Donor Details To My Computer" class="btn btn-primary"/>
+
+  {%endblock%}

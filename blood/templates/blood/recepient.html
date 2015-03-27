@@ -1,0 +1,27 @@
+{% if order_list %}
+    <table>
+	<thead>
+		<th>Name</th>
+		<th>Address</th>
+		<th>Contact</th>
+		<th>Email</th>
+		<th>Bggroup</th>
+		<th>Bgunits</th>
+		<th>Age</th>
+	</thead>
+    {% for donor in order_list %}
+		<tr>
+        <td>{{ donor.name }}</td>
+		<td>{{ donor.address }}</td>
+		<td>{{ donor.contact }}</td>
+		<td>{{ donor.email }}</td>
+		<td>{{ donor.bggroup }}</td>
+		<td>{{ donor.bgunits }}</td>
+		<td>{{ donor.age }}</td>
+		</tr>
+    {% endfor %}
+	</table>
+{% else %}
+    <p>Table is Empty</p>
+{% endif %}
+

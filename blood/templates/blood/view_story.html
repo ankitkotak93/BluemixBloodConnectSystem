@@ -1,0 +1,6 @@
+{% extends "blood/base.html" %}
+{% load i18n %}
+{% block content-body %}
+<div style="text-align:center;font-weight:bold;font-size:30px">{{order_list.tag}}</div><br/><br/>
+<div>{{order_list.story|safe}}</div>
+{% endblock %}

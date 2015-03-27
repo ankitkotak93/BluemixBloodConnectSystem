@@ -1,0 +1,355 @@
+{% extends "blood/base.html" %}
+{% block content-body %}
+<html>
+<head>
+
+    <!-- Bootstrap CSS -->
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- BootstrapValidator CSS -->
+    <link rel="stylesheet" href="../../static/dist/css/bootstrapValidator.min.css"/>
+
+    <link rel="stylesheet" href="../../static/css/datepicker.css"/>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script type="text/javascript" src="../../static/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../../static/js/bootstrap.min.js"></script>
+
+    <!-- BootstrapValidator JS -->
+    <script type="text/javascript" src="../../static/dist/js/bootstrapValidator.min.js"></script>
+
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false"> </script>
+
+<script>
+var map;
+var geocoder;
+var pos;
+ var markersArray = [];
+geocoder = new google.maps.Geocoder();
+var infowindow = new google.maps.InfoWindow();
+function initialize() {
+
+  var mapOptions = {
+    zoom: 6,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+  var lat;
+  var lng;
+  // Try HTML5 geolocation
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+        pos = new google.maps.LatLng(position.coords.latitude,
+                                       position.coords.longitude);
+	lat=position.coords.latitude;
+        lng=position.coords.longitude;
+      map.setCenter(pos);
+      document.getElementById("latitude").value= lat;
+      document.getElementById("longitude").value= lng;
+  var marker = new google.maps.Marker({
+      position: pos,
+      map: map,
+      draggable: true
+  });
+   // Marker dragging enabled
+   updateMarkerPosition(pos);
+   codeLatLng(pos);
+   // Add dragging event listeners.
+
+   google.maps.event.addListener(marker, 'dragstart', function() {
+    updateMarkerAddress('Dragging...');
+  });
+
+
+   google.maps.event.addListener(marker, 'drag', function() {
+   updateMarkerStatus('Dragging...');
+   updateMarkerPosition(marker.getPosition());
+   });
+
+   google.maps.event.addListener(marker, 'dragend', function() {
+   updateMarkerStatus('Drag ended');
+   codeLatLng(marker.getPosition());
+   });
+  //Marker dragging ends here.
+    }, function() {
+      handleNoGeolocation(true);
+    });
+  } else {
+    // Browser doesn't support Geolocation
+    handleNoGeolocation(false);
+  }
+}
+
+
+function initMap() {
+
+  var mapOptions = {
+    zoom: 6,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+  var lat;
+  var lng;
+  codeAddress();
+}
+function deleteOverlays() {
+	if (markersArray) {
+		for (i in markersArray) {
+			markersArray[i].setMap(null);
+			}
+	markersArray.length = 0;
+	}
+
+}
+
+
+function codeAddress() {
+  var address = document.getElementById('address').value;
+  geocoder.geocode( { 'address': address}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+      map.setCenter(results[0].geometry.location);
+      pos = results[0].geometry.location;
+      placeMarker(pos);
+      document.getElementById("latitude").value = results[0].geometry.location.lat()
+      document.getElementById("longitude").value = results[0].geometry.location.lng()
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+}
+
+function codeLatLng(pos) {
+  var latlng = pos;
+  geocoder.geocode({'latLng': latlng}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+      if (results[1]) {
+        map.setZoom(11);
+	document.getElementById('address').value = results[0].formatted_address;
+
+	updateMarkerAddress(results[0].formatted_address);
+        infowindow.setContent(results[0].formatted_address);
+        infowindow.open(map, marker);
+      } else {
+        alert('No results found');
+      }
+    } else {
+      alert('Geocoder failed due to: ' + status);
+    }
+  });
+
+}
+
+function placeMarker(locati) {
+	// first remove all markers if there are any
+	deleteOverlays();
+	marker = new google.maps.Marker({
+	position: locati,
+	map: map,
+	draggable: true
+	});
+
+	updateMarkerPosition(locati);
+	codeLatLng(locati);
+
+ 	google.maps.event.addListener(marker, 'dragstart', function() {
+	updateMarkerAddress('Dragging...');
+	});
+
+ 	google.maps.event.addListener(marker, 'drag', function() {
+	updateMarkerStatus('Dragging...');
+	updateMarkerPosition(marker.getPosition());
+	});
+
+	google.maps.event.addListener(marker, 'dragend', function() {
+	updateMarkerStatus('Drag ended');
+	codeLatLng(marker.getPosition());
+	});
+	 markersArray.push(marker);
+}
+
+
+
+function updateMarkerStatus(str) {
+document.getElementById('markerStatus').innerHTML = str;
+}
+
+function updateMarkerPosition(latLng) {
+document.getElementById("latitude").value = latLng.lat();
+document.getElementById("longitude").value = latLng.lng();
+}
+
+function updateMarkerAddress(str) {
+}
+
+function handleNoGeolocation(errorFlag) {
+  if (errorFlag) {
+    var content = 'Error: The Geolocation service failed.';
+  } else {
+    var content = 'Error: Your browser doesn\'t support geolocation.';
+  }
+
+  var options = {
+    map: map,
+    position: new google.maps.LatLng(60, 105),
+    content: content
+  };
+
+  var infowindow = new google.maps.InfoWindow(options);
+  map.setCenter(options.position);
+}
+
+
+google.maps.event.addDomListener(window, 'load', initialize)
+</script>
+	
+</head>
+
+<body>
+  <table>
+  <tr>
+	<td>
+
+<div id="map-canvas" style="width:500px;height:380px;"></div> <br/>
+<div id="markerStatus"> </div>
+	</td>
+	<td>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+                <div class="page-header">
+                    <h2>Organise Camps</h2>
+                </div>
+                <form id="registrationForm" method="post" class="form-horizontal" action="/blood/bloodcamp_form/" enctype="multipart/form-data"
+                    data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
+                    data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
+                    data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">{% csrf_token %}
+
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Name of the Organisation:</label>
+                        <div class="col-lg-5">
+                            <input type="text" class="form-control" name="name" value="{% if query.name %}{{ query.name }}{% endif %}"
+                                data-bv-notempty="true"
+                                data-bv-notempty-message="Name is required and cannot be empty"
+
+				/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Address:</label>
+                        <div class="col-lg-5">
+                            <input id="address" type="text" class="form-control" name="address" value="{% if query.address %}{{ query.address }}{% endif %}"
+
+				/>
+                        </div>
+                    </div>
+		    <script type="text/javascript">
+				var timeout;
+					$('#address').keypress(function() {
+					if(timeout) {
+						clearTimeout(timeout);
+						timeout = null;
+					}
+					timeout = setTimeout(initMap, 3000)
+				})
+		   </script>
+
+		  <div class="form-group">
+    			<label class="col-lg-3 control-label">Start Date:</label>
+    			<div class="col-lg-5">
+    				<input id="startDate" type="text" class="form-control" name="sdate" placeholder="yyyy-mm-dd" value="{% if query.sdate %} {{query.sdate}} {% endif %}"
+				  	data-bv-notempty="true"
+                                	data-bv-notempty-message="Start Date of camp is required"
+
+                                	data-bv-date="true"
+                                	data-bv-date-format="YYYY-MM-DD"
+                               	 	data-bv-date-message="Start Date of camp is not valid"
+				/>
+    			</div>
+    		 </div> 
+    		  <!--input id="startDate" type="text" class="form-control" name="sdate" value=""/-->
+    		  
+    			<!--a href="#" class="btn small" id="dp4" data-date-format="yyyy-mm-dd" data-date="2012-02-25">Change</a-->
+              
+
+                <div class="form-group">
+    			<label class="col-lg-3 control-label">End Date:</label>
+    			<div class="col-lg-5">
+    				<input id="endDate" type="text" class="form-control" name="edate" placeholder="yyyy-mm-dd" value="{% if query.edate %} {{query.edate}} {% endif %}"
+					data-bv-notempty="true"
+                                	data-bv-notempty-message="End Date of camp is required"
+
+                                	data-bv-date="true"
+                                	data-bv-date-format="YYYY-MM-DD"
+                               	 	data-bv-date-message="End Date of camp is not valid"
+				/>
+    			</div>
+                </div> 
+
+            <!--div class="control-group">
+    		<label class="control-label">End Date:</label>
+    			<div class="controls">
+				   <div class="fieldset__wrapper"><input name="sdate" id="" class="fieldset__input js__datepicker" type=text placeholder="Try me&hellip;"></div>
+                  </div>
+              </div--> 
+
+               <div class="form-group">
+                        <label class="col-lg-3 control-label">Contact:</label>
+                        <div class="col-lg-5">
+                            <input type="text" class="form-control" name="contact" value="{% if query.contact %}{{ query.contact }}{% endif %}"
+                                data-bv-notempty="true"
+                                data-bv-notempty-message="Contact No is required and cannot be empty"
+				pattern="^[2-9]{1}[0-9]{9}$"
+				data-bv-regexp-message="Should contain only 10 digit no."
+				/>
+                        </div>
+                    </div>
+                    <!--div class="form-group">
+                        <label class="col-lg-3 control-label">Date of birth</label>
+                        <div class="col-lg-5">
+                            <input type="text" class="form-control" name="birthday" placeholder="YYYY/MM/DD"
+                                data-bv-notempty="true"
+                                data-bv-notempty-message="The date of birth is required"
+
+                                data-bv-date="true"
+                                data-bv-date-format="YYYY/MM/DD"
+                                data-bv-date-message="The date of birth is not valid" />
+                        </div>
+                    </div-->
+
+                    <div class="form-group">
+                        <div class="col-lg-9 col-lg-offset-3">
+                            <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </div>
+                    </div>
+		<input type="text" name="latitude" style="visibility:hidden;" id="latitude" value="{% if query.lat1 %}{{ query.lat1 }}{% endif %}"/>
+		<input type="text" name="longitude" style="visibility:hidden;"id="longitude" /value="{% if query.long1 %}{{ query.long1 }}{% endif %}">
+                </form>
+            </div>
+        </div>
+    </div>
+
+<script>
+$(document).ready(function() {
+    $('#registrationForm').bootstrapValidator();
+});
+</script>
+<!-- Function for selecting the value of Blood Group !-->
+{% if query.bggroup %}
+	<script type="text/javascript">
+		function setSelectValue(val){
+			document.getElementById(val).className += ' active';
+			document.getElementById(val + ":").checked = true;
+		}
+	setSelectValue('{{query.bggroup}}');
+	</script>
+{% endif %}
+	</td>
+  </tr>
+</table>
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,266 @@
+{% block content-body %}
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>BloodConnect</title>
+    <!-- Bootstrap core CSS -->
+    <link href="../../static/css/bootstrap.css" rel="stylesheet">
+    <link href="../../static/css/main.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="../../static/js/hover.zoom.js"></script>
+    <script src="../../static/js/hover.zoom.conf.js"></script>
+    <script src="../../static/js/bootstrap.min.js"></script>
+
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+      #panel {
+        position: absolute;
+        top: 5px;
+        left: 50%;
+        margin-left: -180px;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+      }
+    </style>
+    <style>
+      #directions-panel {
+        height: 100%;
+        float: right;
+        width: 390px;
+        overflow: auto;
+      }
+
+      #map-canvas {
+        margin-right: 400px;
+      }
+
+      #control {
+        background: #fff;
+        padding: 5px;
+        font-size: 14px;
+        font-family: Arial;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 2px rgba(33, 33, 33, 0.4);
+        display: none;
+      }
+
+      @media print {
+        #map-canvas {
+          height: 500px;
+          margin: 0;
+        }
+
+        #directions-panel {
+          float: none;
+          width: auto;
+        }
+      }
+    </style>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+<script>
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+var locations = {{ final1|safe }}
+function initialize() {
+  directionsDisplay = new google.maps.DirectionsRenderer();
+  var lat = {{rlat}};
+  var lon = {{rlong}};
+  var mapOptions = {
+    zoom: 7,
+    center: new google.maps.LatLng(lat, lon)
+  };
+  var map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+  /*var marker = new google.maps.Marker({
+      position:  new google.maps.LatLng(lat, lon),
+      map: map,
+      title: 'Hello World!'
+  });*/
+
+  directionsDisplay.setMap(map);
+  directionsDisplay.setPanel(document.getElementById('directions-panel'));
+
+  var control = document.getElementById('control');
+  control.style.display = 'block';
+  map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
+  for (var i = 0; i < locations.length; i++) {
+    var beach = locations[i];
+    var myLatLng = new google.maps.LatLng(beach[6], beach[7]);
+    var marker = new google.maps.Marker({
+        position: myLatLng,
+        map: map,
+    });
+    google.maps.event.addListener(marker, 'click', (function(marker, i) {
+    return function() {
+          infowindow.setContent('<h3>' + beach[0] + '</h3>' );
+          infowindow.open(map, marker);
+    }
+    })(marker, i));
+	google.maps.event.addListener(marker,'rightclick', (function(marker,i){ 
+     	return function() {
+      		document.getElementById('start').value = "{{radd}}";
+		document.getElementById('end').value = marker.position;
+		calcRoute();
+       	};
+    })(marker,i));
+
+  }
+
+}
+
+function calcRoute() {
+  var start = document.getElementById('start').value;
+  var end = document.getElementById('end').value;
+  var request = {
+    origin: start,
+    destination: end,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+    }
+  });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+       <!-- Static navbar -->
+    <div class="navbar navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/blood/home">BloodConnect</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/blood/donate_blood">Donate</a></li>
+            <li><a href="/blood/requestblood_form">Request</a></li>
+            <li><a href="/blood/bloodcamp">Blood Camps</a></li>
+            <li><a href="/blood/share">Share Experience</a></li>
+            <li><a href="/blood/faqs">Faqs</a></li>
+            {% if user %}
+                {% if user.is_anonymous %}
+                        <li><a href="/accounts/login/">Login</a></li>
+                {% else %}
+                        <li><a href="/accounts/logout/">Logout</a></li>
+                        <li>Welcome {{ user }}</li>
+                {% endif %}
+           {% endif %}
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+	 
+    <div id="control">
+	<input id="start" type="textbox" value="{{radd}}" style="display:none;">
+	<input id="end" type="textbox" value="" style="display:none;">
+	<input type="button" value="Get Directions!" onclick="calcRoute();" style="display:none;">
+         <a href="#" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#largeModal">See All Donors</a>
+
+    </div>
+
+
+    </div>
+    
+    <div id="directions-panel"></div>
+    <div id="map-canvas"></div>
+      
+    <div class="modal fade bs-example-modal-lg" id="largeModal" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+      <div class="modal-dialog modal-lg" style="width:1000px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">All Donors</h4>
+          </div>
+          <div class="modal-body">
+            <a href="/blood/send_email1">Send Mail to All Donors</a>
+            <table class="table table-striped">
+		<tr class="info">
+			<th style="background-color:green;color:white;">Name</th>
+			<th style="background-color:green;color:white;">E-mail</th>
+			<th style="background-color:green;color:white;">Address</th>
+			<th style="background-color:green;color:white;">Contact No</th>
+			<th style="background-color:green;color:white;">Age</th>
+			<th style="background-color:green;color:white;">Units</th>
+			<th style="background-color:green;color:white;">Hangout</th>
+
+		</tr>
+	{% for i in details %}
+		<tr class="info">
+		{% for j in i %}
+			<td> {{j}}</td>
+		{% endfor %}
+			<td><a href="https://plus.google.com/hangouts/_?gid=269741158057" target="_blank" style="text-decoration:none;"> <img src="https://ssl.gstatic.com/s2/oz/images/stars/hangout/1/gplus-hangout-15x79-normal.png" alt="Start a Hangout" style="border:0;width:79px;height:15px;"/></a></td>
+		</tr>
+	{% endfor %}
+	</table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
+{% endblock %}
+<div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    {% block footer-left %} 
+					<h4><a href="/blood/feedback">Feedback</a><br/>
+                    </h4>
+<!--                     <p>
+                        Some Address 987,<br/>
+                        +34 9054 5455, <br/>
+                        Madrid, Spain.
+                    </p> -->
+                    {% endblock %}
+                </div><!-- /col-lg-4 -->
+                
+                <div class="col-lg-4">
+                    {%block footer-middle %}
+                    <h4><a href="/blood/contact">Contact Us</a><br/></h4>
+<!--                     <p>
+                        <a href="#">Dribbble</a><br/>
+                        <a href="#">Twitter</a><br/>
+                        <a href="#">Facebook</a>
+                    </p> -->
+                    {% endblock %}
+                </div><!-- /col-lg-4 -->
+                
+                <div class="col-lg-4">
+                    {%block footer-right%}
+                    <h4><a href="/blood/about">About Us</a><br/></h4>
+<!--                     <p>This cute theme was created to showcase your work in a simple way. Use it wisely.</p> -->
+                    {%endblock%}
+                </div><!-- /col-lg-4 -->
+            
+            </div>
+            <div class="row">
+                 <small style="font-size:10px;margin-bottom:15px;">© 2014 Designed by Ashish Kumar &nbsp;&nbsp; Vivek Jain &nbsp;&nbsp; Akash Agrawall &nbsp;&nbsp; Ankit Kotak 
+                    </small>
+            </div>
+        </div>
+    </div>
+</body>

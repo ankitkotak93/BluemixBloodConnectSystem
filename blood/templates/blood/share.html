@@ -1,0 +1,65 @@
+{% extends "blood/base.html" %}
+{% load i18n %}
+{% block content-body %}
+<head>
+
+</head>
+	<h1 style="text-align: left;color: #11A8AB;font-weight:bold;font-size: 50px">All Stories</h1>
+	
+	{% if order_list %}
+	    {% for donor in order_list %}
+		<div class="panel-group" id="accordion">
+  			<div class="panel panel-danger">
+    				<div class="panel-heading">
+      					<h4 class="panel-title">
+        					<a data-toggle="collapse" data-parent="#accordion" href="#collapse{{forloop.counter}}">
+							{{donor.tag}}
+        					</a>
+      					</h4>
+   				</div>
+   	 			<div id="collapse{{forloop.counter}}" class="panel-collapse collapse">
+     					 <div class="panel-body">
+						{{donor.story|safe}}
+      					</div>
+    				</div>
+  			</div>
+		</div>
+		<br/>
+	    {% endfor %}
+	{% else %}
+	    <p>Table is Empty</p>
+	{% endif %}
+	<div style="text-align:left;"><a  style="font-size:30px;text-align: left;background-image: none;border: 1px solid transparent;
+	border-radius: 4px;color: #fff;
+	background-color: #428bca;	
+	border-color: #357ebd;" class="btn btn-primary" href="/blood/putstory">Tell us Your Story</a></div>
+		&nbsp;&nbsp;&nbsp;<div style="text-align:left;color: #11A8AB;font-weight:bold;font-size:50px;">Your Stories </div><br/>
+
+	{% if new_var %}
+		{% for var in new_var %}  
+  		<div class="panel-group" id="accordion">
+  			<div class="panel panel-danger">
+    				<div class="panel-heading">
+      					<h4 class="panel-title">
+        					<a data-toggle="collapse" data-parent="#accordion" href="#collapsey{{forloop.counter}}">
+							{{var.tag}}
+        					</a>
+      					</h4>
+   				</div>
+   	 			<div id="collapsey{{forloop.counter}}" class="panel-collapse collapse">
+     					 <div class="panel-body">
+						{{var.story|safe}}
+      					</div>
+    				</div>
+  			</div>
+		</div>
+		<br/>
+	
+		{% endfor %}
+	    </ul>
+	{% else %}
+	    <p>Table is Empty</p>
+	{% endif %}
+{% endblock %}
+
+

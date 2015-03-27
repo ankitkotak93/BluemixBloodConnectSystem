@@ -1,0 +1,66 @@
+{% extends "blood/base.html" %}
+{% load i18n %}
+{% block content-body %}
+
+<div class="container marketing">
+<div style="background: #d2d2d2;
+    margin: 30px 0 50px;
+    padding: 30px 0 60px 30px;
+">
+<p style="float:right;position:relative;left:-10px;">Why Wait? Start Today</p>
+<a  style="background-image: none;border: 1px solid transparent;
+border-radius: 4px;
+border-color: #357ebd;float:right;position:relative;top:30px;left:135px;" href="/blood/todaycamp" class="btn btn-default">Camps Today</a>
+
+<h4 >Want to go to blood camps? </h4>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<a style="background-image: none;border: 1px solid transparent;
+border-radius: 4px;color: #fff;
+background-color: #428bca;
+border-color: #357ebd;"href="/blood/camps_detail" class="btn btn-primary">Ongoing Camps</a></div>
+      <!-- Three columns of text below the carousel -->
+      
+<div style="background: #d2d2d2;
+    margin: 30px 0 50px;
+    padding: 30px 0 60px 30px;
+">
+<h4 >Want to organise a blood camp</h4>
+
+	&nbsp;&nbsp;&nbsp;&nbsp;
+<a style="background-image: none;border: 1px solid transparent;
+border-radius: 4px;color: #fff;
+background-color: #428bca;
+border-color: #357ebd;" href="/blood/bloodcamp_form" class="btn btn-primary">Organise</a>
+<br/>
+</div>
+
+<div style="background: #d2d2d2;
+    margin: 30px 0 50px;
+    padding: 30px 0 60px 30px;
+">
+<h4 >Want to find location of all blood camps on a map</h4>
+
+	&nbsp;&nbsp;&nbsp;&nbsp;
+<a style="background-image: none;border: 1px solid transparent;
+border-radius: 4px;color: #fff;
+background-color: #428bca;
+border-color: #357ebd;" href="/blood/bloodcamp_list" class="btn btn-primary">Find Location</a>
+<br/>
+</div>
+
+<div style="background: #d2d2d2;
+    margin: 30px 0 50px;
+    padding: 30px 0 60px 30px;
+">
+<h4 >Camps Organised By You</h4>
+
+	&nbsp;&nbsp;&nbsp;&nbsp;
+<a style="background-image: none;border: 1px solid transparent;
+border-radius: 4px;color: #fff;
+background-color: #428bca;
+border-color: #357ebd;" href="/blood/drive" class="btn btn-primary">Your Organised Camps</a>
+<br/>
+</div>
+
+</div></div>
+{% endblock %}

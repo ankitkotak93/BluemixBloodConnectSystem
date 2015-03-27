@@ -1,0 +1,21 @@
+{% extends "blood/base.html" %}
+{% load i18n %}
+
+{% block content-body %}
+
+<h2 style="color:11A8AB">{{camplist.name}} is organised by {{userit}}
+Starts On {{camplist.sdate}} and Ends on {{camplist.edate}}<h2><br/>
+{% if postit %}
+{% for post,author in lit %}
+	{{author}}
+	: {{ post.comment }} <br/>
+{% endfor %}
+{% endif %}
+
+<form action="/blood/store_camp_post/{{campID}}/" role="form" method="post">
+{% csrf_token %}
+<textarea rows=20 cols=80 class="form-control" placeholder="Your Comments"  name="comment"></textarea><br/>
+<button style="background-image: none;border: 1px solid transparent;border-radius: 4px;color: #fff;background-color: #428bca;
+border-color: #357ebd;"  class="btn btn-primary" type="submit">Submit</button>
+</form>
+{% endblock %}

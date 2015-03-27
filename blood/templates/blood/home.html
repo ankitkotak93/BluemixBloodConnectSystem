@@ -1,0 +1,119 @@
+{% extends "blood/base.html" %}
+{% block content-body %}
+<head>
+	<link rel="stylesheet" type="text/css" href="../../static/css/ticker/style.css"/>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../static/js/ticker/jquery.totemticker.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('#vertical-ticker').totemticker({
+				row_height	:	'350px',
+				next		:	'#ticker-next',
+				previous	:	'#ticker-previous',
+				stop		:	'#stop',
+				start		:	'#start',
+				mousestop	:	false,
+			});
+		});
+	</script>
+</head>
+<body>
+
+<div class="row" style="margin-top:-10px;text-align:center;">
+		<!-- <div class="col-md-2">
+		</div>	
+		<div class="col-md-8" class=""> -->
+	<img src="/static/img/bladesmall.png" style="width:80%;height:350px;">
+		</img>
+		<!-- </div>	
+		<div class="col-md-2">
+		</div>	 -->
+</div>
+<!-- <img src="/static/img/bladesmall.png" style="margin-left:80px;width:80%;height:350px">
+</img> -->	
+
+
+<!--h2>About Us</h2>
+<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea.</p-->
+<style>
+.span_1_of_3
+{
+	display:inline-block;
+	position:relative;
+	width:30%;
+}
+.span_2_of_3
+{
+	display:inline-block;
+	position:relative;
+	width:30%;
+}
+.first:hover{
+	border:2px solid #BCBCBC;border-radius:50px;
+}
+</style>
+
+
+<!-- <div class="section group"> -->
+	<div class="row">
+		<div class="col-md-3 first" style="">
+			<a href="/blood/donate_blood/"><img src="/static/img/round111copy.png" style="height:250px;width:250px;" alt=""/></a>
+			<div class="desc">
+				<h4><a href="/blood/donate_blood/">Donate Blood</a></h4>
+				<p>Donation of Blood means a few minutes to you but a lifetime for somebody else.Donate Blood Today</p>
+			</div>
+		</div>
+  		<div class="col-md-3 first" style="">
+			<a href="/blood/requestblood_form">
+				<img src="/static/img/round2copy.png" alt="" style="height:250px;width:250px;"/>
+			</a>
+			<div class="desc">
+				<h4><a href="/blood/requestblood_form">Request Blood</a></h4>
+				<p>The gift of blood is the gift of life.Find Blood Donors.And spread your need among other people</p>
+			</div>
+  		</div>
+		<div class="col-md-3 first" style="">
+			<a href="/blood/bloodcamp"><img src="/static/img/blood-drive2copy.png" alt=""/ style="height:250px;width:250px;">
+			<div class="desc">
+				<h4><a href="/blood/bloodcamp">Blood Camp</a></h4>
+			    <p>Want to organise a blood camp !! Want to attend the existing blood camps</p><br/>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<ul id="vertical-ticker">
+			{% for i in requests %}
+				<li><a href="/blood/view_request/{{i.id}}">
+				{{i.name}} needs {{i.bgunits}} units of {{i.bggroup}} blood.</a></li>
+			{% endfor %}
+			</ul>
+		
+			<p><a href="#" id="ticker-previous">Previous</a> / <a href="#" id="ticker-next">Next</a> / <a id="stop" href="#">Stop</a> / <a id="start" href="#">Start</a></p>
+					
+		</div>
+	</div>
+	<!-- <div class="span_1_of_3" style="background-color: #E8E8E8">
+		<a href="/blood/donate_blood/"><img src="/static/img/round111copy.png"style="height:250px;width:250px;" alt=""/></a>
+		<div class="desc">
+			<h4><a href="/blood/donate_blood/">Donate Blood</a></h4>
+			<p>Donation of Blood means a few minutes to you but a lifetime for somebody else.Donate Blood Today</p>
+		</div>
+	</div>
+	<div class="span_1_of_3" style="background-color: #E8E8E8">
+		<a href="/blood/requestblood_form"><img src="/static/img/round2copy.png" alt="" style="height:250px;width:250px;"/></a>
+		<div class="desc">
+			<h4><a href="/blood/requestblood_form">Request Blood</a></h4>
+			<p>The gift of blood is the gift of life.Find Blood Donors.And spread your need among other people</p>
+		</div>
+	</div>
+
+	<div class="span_2_of_3" style="background-color: #E8E8E8">
+		<a href="/blood/bloodcamp"><img src="/static/img/blood-drive2copy.png" alt=""/ style="height:250px;width:250px;"></a>
+		<div class="desc">
+			<h4><a href="/blood/bloodcamp">Blood Camp</a></h4>
+		    <p>Want to organise a blood camp !! Want to attend the existing blood camps</p><br/>
+		</div>
+	</div> -->
+<!-- </div> -->
+</body>
+{% endblock %}
+

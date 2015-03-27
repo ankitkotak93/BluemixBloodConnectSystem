@@ -1,0 +1,153 @@
+{% extends "blood/base.html" %}
+{% load i18n %}
+{% block content-body %}
+<h2>Thanks for taking part in the camp</h2>
+    <script type="text/javascript">
+  
+      var CLIENT_ID = '58874409849-lae2s3fo9hriq9560tsogv05fjh4kks7.apps.googleusercontent.com';
+      var SCOPES = 'https://www.googleapis.com/auth/calendar';
+      /**
+       * Called when the client library is loaded to start the auth flow.
+       */
+      function handleClientLoad() {
+        window.setTimeout(checkAuth, 1);
+      }
+
+      /**
+       * Check if the current user has authorized the application.
+       */
+      
+      function checkAuth() {
+        gapi.auth.authorize(
+            {'client_id':'58874409849-lae2s3fo9hriq9560tsogv05fjh4kks7.apps.googleusercontent.com', 'scope': SCOPES, 'immediate': true},
+            handleAuthResult);
+      }callback
+
+      /**
+       * Called when authorization server replies.
+       *
+       * @param {Object} authResult Authorization result.
+       */
+
+
+  
+
+      function handleAuthResult(authResult) {
+        var authButton = document.getElementById('authorizeButton');
+       // var filePicker = document.getElementById('filePicker');
+        authButton.style.display = 'none';
+       // filePicker.style.display = 'none';
+        if (authResult && !authResult.error) {
+          // Access token has been successfully retrieved, requests can be sent to the API.
+         // filePicker.style.display = 'block';
+document.getElementById("create_event").onclick = createStarterEvent;
+          //filePicker.onchange = uploadFile;
+        } else {
+          // No access token could be retrieved, show the button to start the authorization flow.
+          authButton.style.display = 'block';
+    authButton.onclick = function() {
+              gapi.auth.authorize(
+                  {'client_id': '58874409849-lae2s3fo9hriq9560tsogv05fjh4kks7.apps.googleusercontent.com', 'scope': SCOPES, 'immediate': false},
+                  handleAuthResult);
+          };
+        }
+      }
+
+
+      function listStarterEvent() {
+        gapi.client.load('calendar', 'v3', function() {
+            listEvent();
+            setTimeout(function() {
+        alert("Event Created.");
+      },5);
+            
+});
+        
+      }
+
+function createStarterEvent() {
+        gapi.client.load('calendar', 'v3', function() {
+            createEvent();
+            setTimeout(function() {
+        alert("Event Created! Please click home button to go back.");
+      },5);
+            
+});
+        
+      }
+
+
+function listEvent() {
+
+
+  var request = gapi.client.calendar.events.list({
+                 'calendarId': 'primary'
+               });
+
+  request.execute(function(resp) {
+        for (var i = 0; i < resp.items.length; i) {
+                var li = document.createElement('li');
+                  li.appendChild(document.createTextNode(resp.items[i].summary));
+                    document.getElementById('events').appendChild(li);
+                   }
+                  });
+        }
+function createEvent()
+{
+ 
+var resource = {
+  "summary": "Blood Camp",
+  "location": "{{query.address}}",
+  "start": {
+    "dateTime":"{{st}}" //"2013-11-23T23:0:00.00005:30"
+  },
+  "end": {
+    "dateTime": "{{en}}"
+  }
+};
+var request = gapi.client.calendar.events.insert({
+  'calendarId': 'primary',
+  'resource': resource
+});
+request.execute(function(resp) {
+  console.log(resp);
+});
+}
+
+    </script>
+    <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+            <!-- NAVIGATION -->
+ 
+  
+<h1>Add Camp details to Google Calendar</h1>
+<p class="cufon">
+Please Authorize BloodConnect to access your Google Calendar by Clicking on the Authorize Button. If you do not see the Authorize Button, Please Continue to next step as you have already Authorized.
+
+</p>
+
+Note: This is a One Time Process only. To Revoke Access, please change your Google calendar settings.
+<input type="button" id="authorizeButton" style="display: none" value="Authorize" class="btn btn-danger" />
+<!--img src="/static/img/calendar.jpeg"  style="float:right;margin:0 5px 0 0;" /-->
+<br/>
+<br/>
+
+<p class="cufon">
+Click on Create Event to Add this Camp to Google Calendar. Please configure your Calendar so you can receive notifications. 
+</p>
+
+<input type="button" id="create_event" value="Create Event in Google Calendar" class="btn btn-primary" onclick="item();"/>
+<br/><br/>    
+<!-- <p class="cufon" id="item">
+Now,Please Click on confirm Appointment.
+</p>
+ -->
+
+</div> <!-- /content -->
+          <!-- FOOTER -->
+<script>
+function item()
+{
+$('#item').append("Inserted");
+}
+</script>
+{% endblock %}

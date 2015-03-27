@@ -1,0 +1,69 @@
+{% extends "blood/base.html" %}
+{% load i18n %}
+{% block content-body %}
+<style>
+
+</style>
+<div class="container">
+	<h1 style="color: #666d89; font-family: 'Montserrat', sans-serif;">Hello {{user}}</h1>
+	<p style="color: #666d89; font-family: 'Montserrat', sans-serif;">Every two seconds, a patient in the World is in need of blood. In fact, about one of every seven people entering a hospital requires a blood transfusion. These startling statistics underscore the crucial nature of blood donation. Yet, only about 3% of the population currently gives blood. The number one reason these donors say they give is because they “want to help others.”</p>
+
+{% if camp_list %}
+	<h3>We have following Camps</h3>
+	<ul class="list">
+	{% for camp in camp_list %}
+		<li class="well">
+		<table class="table">
+			<tr>
+			<th class="blood_type">Name</th>
+			<td>{{ camp.name }}</th>
+			</tr>
+			<tr>
+			<th>Address:</th> <td class="location"> {{ camp.address }} </td>
+			</tr>
+			<tr>
+				<th>Started on:</th> <td class="placed_at"> {{ camp.sdate }} </td>
+			</tr>
+			<tr>
+				<th>Ended on:</th> <td class="placed_at"> {{ camp.edate }} </td>
+			</tr>
+			<tr>
+				<th><a href="/blood/camp_post/{{camp.id}}">User's View</a></th>
+				<th><a href="/blood/camp_donate/{{camp.id}}">Donate</a></th>
+			</tr>
+		</table>
+		</li>
+	{% endfor %}
+	</ul>
+{% else %}
+<h3 style="position:relative;left: 3%;"> No Camps found </h3> <img src="/static/img/red-smiley-face-md.png" alt="" style="height:250px;width:250px;"/>
+{% endif %}
+{% if going_list %}
+	<h3>You are going to following Camps</h3>
+	<ul class="list">
+	{% for camp in going_list %}
+		<li class="well">
+		<table class="table">
+			<tr>
+			<th class="blood_type">Name</th>
+			<td>{{ camp.name }}</th>
+			</tr>
+			<tr>
+			<th>Address:</th> <td class="location"> {{ camp.address }} </td>
+			</tr>
+			<tr>
+				<th>Started on:</th> <td class="placed_at"> {{ camp.sdate }} </td>
+			</tr>
+			<tr>
+				<th>Ended on:</th> <td class="placed_at"> {{ camp.edate }} </td>
+			</tr>
+			<tr>
+				<th><a href="/blood/camp_post/{{camp.id}}">User's View</a></th>
+			</tr>
+		</table>
+		</li>
+	{% endfor %}
+	</ul>
+{% endif %}
+</div>
+{% endblock %}

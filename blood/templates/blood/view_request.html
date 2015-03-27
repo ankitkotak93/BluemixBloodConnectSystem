@@ -1,0 +1,42 @@
+{% extends "blood/base.html" %}
+{% load i18n %}
+{% block content-body %}
+<div class="container">
+	<h1 style="color: #666d89; font-family: 'Montserrat', sans-serif;">Hello {{user}}</h1>
+	<p style="color: #666d89; font-family: 'Montserrat', sans-serif;">Every two seconds, a patient in the World is in need of blood. In fact, about one of every seven people entering a hospital requires a blood transfusion. These startling statistics underscore the crucial nature of blood donation. Yet, only about 3% of the population currently gives blood. The number one reason these donors say they give is because they â€œwant to help others.â€</p>
+
+	<h3>We have following Requests</h3>
+	<ul style="list-style-type: none;"class="list">
+		<li class="well">
+		<table class="table">
+			<tr>
+			<th class="blood_type">Name</th>
+			<td>{{ requestit.name }}</th>
+			</tr>
+			<tr>
+			<th>Address:</th> <td class="location"> {{ requestit.address }} </td>
+			</tr>
+			<tr>
+			<th>Contact:</th> <td class="location"> {{ requestit.contact }} </td>
+			</tr>
+			<tr>
+			<th>Email:</th> <td class="location"> {{ requestit.email }} </td>
+			</tr>
+			<tr>
+			<th>Age:</th> <td class="location"> {{ requestit.age }} </td>
+			</tr>
+			<tr>
+			<th>Blood Group:</th> <td class="location"> {{ requestit.bggroup }} </td>
+			</tr>
+			<tr>
+			<th>Blood Units:</th> <td class="location"> {{ requestit.bgunits }} </td>
+			</tr>
+			
+			<tr>
+				<th><a href="/blood/view_request_thanks/{{requestit.id}}">Donate</a></th>
+			</tr>
+		</table>
+		</li>	
+	</ul>
+{% endblock %}
+
